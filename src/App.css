@@ -1,38 +1,344 @@
-.App {
-  text-align: center;
+:root{
+/*light theme*/
+--background3: rgb(248, 248, 248);
+--background2: rgb(243, 243, 243);
+
+--backgroundDark1: rgb(50, 50, 50);
+--backgroundDark3: rgb(60, 60, 60);
+--backgroundDark2: rgb(55, 55, 55);
+
+--buttonColor: rgb(60, 60, 60) !important;
+--buttonColorHover: rgb(0, 0, 0) !important;
+--buttonHoverBackground: rgb(220, 220, 220) !important;
+--buttonChecked: rgb(205, 205, 205) !important;
+
+--buttonColorDark: rgb(170, 170, 170) !important;
+--buttonColorHoverDark: rgb(220, 220, 220) !important;
+--buttonHoverBackgroundDark: rgb(65, 65, 65) !important;
+--buttonCheckedDark: rgb(72, 72, 72) !important;
+
+--buttonBorder: rgba(150, 150, 150, 0.25) !important;
+--buttonBorderHover: rgba(0, 0, 0, 0.25) !important;
+
+--buttonBorderDark: rgba(30, 30, 30, 0.25) !important;
+--buttonBorderHoverDark: rgba(200, 200, 200, 0.25) !important;
+
+/*files*/
+--fileBackground: rgb(235, 235, 235);
+--fileBackgroundDark: rgb(50, 50, 50);
+
+/*editor*/
+--fontSerif: 'Arial';
+--editorColor: rgb(30, 30, 30);
+--editorColorDark: rgb(210, 210, 210);
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+/*                | GENERAL |               */
+
+html, body, #root{
+-webkit-user-select: none;
+-webkit-app-region: drag;
+height: 100%; width: 100%;
+
+margin: 0;  padding: 0;
+border: none;
+overflow: hidden;
+
+transition: .5s;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.frame {display: flex; flex-flow: column; height: 100%; width: 100%;}
+.frame-container {display: contents; height: 100%; width: 100%;}
+.frame .content {flex: 1 1 auto;} 
+
+.header-window{
+height: 100%; width: fit-content;
+
+display: flex;
+justify-content: end;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.header-button{height: 40px; width: 40px;}
+
+.row, .editor, .editor-input{
+width: 100%; height: 100%;
+-webkit-app-region: no-drag;
 }
 
-.App-link {
-  color: #61dafb;
+::-webkit-scrollbar {display: none;}
+
+.files-container{
+height:calc(100vh - 40px); width: 100%;
+
+display: flex; flex-direction: column;
+overflow-y: scroll;
+-webkit-app-region: no-drag;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.add-button{
+width: 100%; height: 50px;
+
+border-radius: 0px !important;
+opacity: .5;
+
+transition: .5s;
+}.add-button:hover{
+opacity: 1;
+border-radius: 50px 0 50px 0 !important;
+}
+
+.trash-container{
+width:50px; height:50px;
+opacity: 0;
+
+margin: auto;
+}.trash-container:hover{
+opacity: 1 !important;
+}
+
+/*                | THEME |               */
+
+#light button{
+background-color: transparent;
+border-radius: 5px;
+border: none;
+color: var(--buttonColor);
+
+transition: .5s;
+-webkit-app-region: no-drag;
+}
+#light button:hover{
+background-color: var(--buttonHoverBackground);
+color: var(--buttonColorHover);
+}
+
+#dark button{
+background-color: transparent;
+border-radius: 5px;
+border: none;
+color: var(--buttonColorDark);
+
+transition: .5s;
+-webkit-app-region: no-drag;
+}
+#dark button:hover{
+background-color: var(--buttonHoverBackgroundDark);
+color: var(--buttonColorHoverDark);
+}
+
+#light .header {
+z-index: 100;
+background-color: var(--background1); 
+height: 40px; width: 100%;
+
+-webkit-app-region: drag;
+display: flex; flex-direction: row;
+}
+#dark .header {
+z-index: 100;
+background-color: var(--backgroundDark1); 
+height: 40px; width: 100%;
+
+-webkit-app-region: drag;
+display: flex; flex-direction: row;
+}
+
+#light .header-items{
+height: 100%; width: 100%;
+
+display: flex; flex-direction: row;
+}
+#dark .header-items{
+background-color: var(--backgroundDark2);
+height: 100%; width: 100%;
+border-radius: 0 20px 0 0;
+
+display: flex; flex-direction: row;
+}
+
+#light .container{
+background-color: var(--background3);
+width: 100%; height: 100%;
+}
+#dark .container{
+background-color: var(--backgroundDark3);
+width: 100%; height: 100%;
+}
+
+#light .ql-container{
+color: var(--editorColor) !important; 
+font-family: var(--fontSerif) !important;
+
+height: calc(100vh - 40px);
+font-size: 14px !important;
+border: none;
+}
+#dark .ql-container{
+color: var(--editorColorDark) !important; 
+font-family: var(--fontSerif) !important;
+
+height: calc(100vh - 40px);
+font-size: 14px !important;
+border: none;
+}
+
+#light .ql-toolbar.ql-snow {
+z-index: 50;
+width: 45px; height: 100%;
+background-color: var(--background2); 
+
+border: none !important;
+gap: 15px;
+margin-left: auto;
+
+display: flex; flex-direction: column; position: relative;
+float: right;
+}
+#dark .ql-toolbar.ql-snow {
+z-index: 50;
+width: 45px; height: 100%;
+background-color: var(--backgroundDark2); 
+
+border: none !important;
+gap: 15px;
+margin-left: auto;
+
+display: flex; flex-direction: column; position: relative;
+float: right;
+}
+
+#light .ql-stroke{fill: none; stroke: var(--buttonColor) !important;} 
+#light .ql-picker-label{fill: none; stroke: var(--buttonColor) !important;} 
+#light .ql-fill{fill: var(--buttonColor)  !important; stroke: none;} 
+
+#dark .ql-stroke{fill: none; stroke: var(--buttonColorDark) !important;} 
+#dark .ql-picker-label{fill: none; stroke: var(--buttonColorDark) !important;} 
+#dark .ql-fill{fill: var(--buttonColorDark)  !important; stroke: none;} 
+
+#light .ql-snow.ql-toolbar button:hover,.ql-snow .ql-toolbar button:hover,
+#light .ql-snow.ql-toolbar button:focus,.ql-snow .ql-toolbar button:focus{
+background-color: var(--buttonHoverBackground) !important; }
+
+#dark .ql-snow.ql-toolbar button:hover,.ql-snow .ql-toolbar button:hover,
+#dark .ql-snow.ql-toolbar button:focus,.ql-snow .ql-toolbar button:focus{
+background-color: var(--buttonHoverBackgroundDark) !important; }
+
+#light .ql-snow.ql-toolbar button.ql-active,.ql-snow .ql-toolbar button.ql-active{
+background-color: var(--buttonChecked) !important;}
+
+#light .ql-blank::before{color: var(--buttonColor) !important;}
+
+#dark .ql-snow.ql-toolbar button.ql-active,.ql-snow .ql-toolbar button.ql-active{
+background-color: var(--buttonCheckedDark) !important;}
+
+#dark .ql-blank::before{color: var(--buttonColorDark) !important;}
+
+#light .add-container{
+width: 100%; height: 50px;
+background-color: var(--background2);
+
+border: solid 1px var(--buttonBorder);
+display: flex;
+justify-content: center;
+
+transition: .5s;
+}
+
+#dark .add-container{
+width: 100%; height: 50px;
+background-color: var(--backgroundDark1);
+
+border: solid 1px var(--buttonBorderDark);
+display: flex;
+justify-content: center;
+
+transition: .5s;
+}
+
+#light .box-container{
+background-color: var(--fileBackground);
+width: 100%; height: 65px;
+color: var(--buttonColor);
+
+border: solid 1px var(--buttonBorder);
+font-family: var(--fontSerif);
+
+display: flex;
+
+transition: .5s;
+} #light .box-container:hover{
+height: 120px;
+color: var(--buttonColorHover);
+}
+
+#dark .box-container{
+background-color: var(--fileBackgroundDark);
+width: 100%; height: 65px;
+color: var(--buttonColorDark);
+
+border: solid 1px var(--buttonBorderDark);
+font-family: var(--fontSerif);
+
+display: flex;
+
+transition: .5s;
+} #dark .box-container:hover {
+height: 120px;
+color: var(--buttonColorHoverDark);
+}
+
+#light .left-container{
+background-color: var(--background2);
+width: 60%; height: 100%;
+
+border-radius: 0px 25px 0 0px;
+
+display: flex; flex-direction: column;
+
+transition: .5s;
+}#light .left-container:hover{
+width: 80%;
+border-radius: 0px 25px 0px 0px;
+}
+
+#dark .left-container{
+background-color: var(--backgroundDark2);
+width: 60%; height: 100%;
+
+border-radius: 0px 25px 25px 0px;
+
+display: flex; flex-direction: column;
+
+transition: .5s;
+}#dark .left-container:hover{
+width: 80%;
+border-radius: 0px 25px 0px 0px;
+}
+
+#light .right-container{
+height: 100%; width: 20%;
+
+margin-left: auto;
+display: flex; flex-direction: column;
+float: right;
+
+transition: .5s;
+}
+
+#dark .right-container{
+height: 100%; width: 20%;
+
+margin-left: auto;
+display: flex; flex-direction: column;
+float: right;
+
+transition: .5s;
+}
+
+#light .box-container:hover .trash-container{
+opacity: .5;
+}
+
+#dark .box-container:hover .trash-container{
+opacity: .5;
 }
