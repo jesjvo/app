@@ -1,7 +1,10 @@
 :root{
+--background: rgb(220, 220, 220);
+--background1: rgb(238, 238, 238);
 --background3: rgb(248, 248, 248);
 --background2: rgb(243, 243, 243);
 
+--backgroundDark: rgb(48, 48, 48);
 --backgroundDark1: rgb(50, 50, 50);
 --backgroundDark3: rgb(60, 60, 60);
 --backgroundDark2: rgb(55, 55, 55);
@@ -129,6 +132,7 @@ z-index: 100;
 background-color: var(--background1); 
 height: 40px; width: 100%;
 
+border-bottom: solid 1px var(--background);
 -webkit-app-region: drag;
 display: flex; flex-direction: row;
 }
@@ -137,6 +141,7 @@ z-index: 100;
 background-color: var(--backgroundDark1); 
 height: 40px; width: 100%;
 
+border-bottom: solid 1px var(--backgroundDark);
 -webkit-app-region: drag;
 display: flex; flex-direction: row;
 }

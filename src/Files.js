@@ -101,8 +101,9 @@ class Files extends React.Component {
           <div className='container' id={this.props.theme}>
             <div className='files-container'>
             <div className='add-container' id={this.props.theme}>
-            <button className='header-button' style={{height:'40px'}} onClick={this.addNewFile.bind(this)}><AiFillPlusCircle size={20}/></button>
-            <button className='header-button' onClick={()=>{ipcRenderer.send('open-folder', null)}}><AiFillFolder size={19}/></button>            </div>
+              <button className='header-button' style={{height:'40px'}} onClick={this.addNewFile.bind(this)}><AiFillPlusCircle size={20}/></button>
+              <button className='header-button' onClick={()=>{ipcRenderer.send('open-folder', null)}}><AiFillFolder size={19}/></button>
+            </div>
               {this.state.file.map((file, index) => {
                 return (
                   <div key={index}>
