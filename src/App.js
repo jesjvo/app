@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import ReactDOM from 'react-dom/client';
+import React from 'react';
 import { HashRouter,Route,Link,Routes } from "react-router-dom";
 import reportWebVitals from './reportWebVitals';
 
@@ -25,6 +24,10 @@ class App extends React.Component {
     this.state = {
       theme: 'dark'
     }
+  }
+
+  componentDidMount(){
+    ipcRenderer.send('check-folders', null)
   }
 
   onChange(){

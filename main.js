@@ -6,7 +6,25 @@ const path = require('path');
 
 const sep = path.sep;
 const folderName = "jes's editor"
-const folder = os.homedir() + sep + folderName
+const folder = os.homedir() + sep + folderName + sep
+const filesFolder = folder + sep + 'Files' + sep
+const autoSaveFolder = folder + 'AutoSave' + sep
+const autoSaveFile = autoSaveFolder + 'Content.JSON'
+
+function checkFolders(){
+    if(!fs.existsSync(folder))
+    {
+        fs.mkdirSync(folder)
+    }
+    if(!fs.existsSync(filesFolder))
+    {
+        fs.mkdirSync(filesFolder)
+    }
+    if(!fs.existsSync(autoSaveFolder))
+    {
+        fs.mkdirSync(autoSaveFolder)
+    }
+}
 
 let mainWindow;
 app.on("ready", () => {
@@ -25,18 +43,19 @@ app.on("ready", () => {
     );
     mainWindow.loadURL('http://localhost:3000')
 
-    if(!fs.existsSync(folder))
-    {fs.mkdirSync(folder)}
-
+    checkFolders()
 });
+
+ipcMain.on('check-folders', (event, value)=>{
+    checkFolders()
+})
 
 ipcMain.on("close-window", (event, value)=>{
     app.quit();
 });
 
-ipcMain.on("set-current-content", (event, contents)=>{
-    console.log(contents)
-    fs.writeFile(app.getAppPath() + sep + "CONTENT", JSON.stringify(contents), (err) =>{
+ipcMain.on("update-content", (event, contents)=>{
+    fs.writeFile(autoSaveFile, JSON.stringify(contents), (err) =>{
         if(!err) {console.log("File Written"); }
         else{
             console.log(err);

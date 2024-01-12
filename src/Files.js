@@ -1,6 +1,4 @@
-import React, { useState } from 'react';
-import ReactDOM from 'react-dom/client';
-import reportWebVitals from './reportWebVitals';
+import React from 'react';
 
 //icons
 import { AiFillPlusCircle } from "react-icons/ai";
@@ -15,6 +13,7 @@ import { FaTrash } from "react-icons/fa6";
   const sep = path.sep;
   const folderName = "jes's editor"
   const folder = os.homedir() + sep + folderName + sep
+  const filesFolder = folder + sep + 'Files' + sep
 
 function File(props){
   const deleteFile = (filePath) => {
@@ -53,11 +52,11 @@ class Files extends React.Component {
   }
 }
 
-componentDidMount(){
-  //if mounted... add all files in folder to state.
+updateFrontEnd(){
+  ipcRenderer.send('check-folders', null)
   let state = [{}]
   
-  fs.readdir(folder, (err, files) => {
+  fs.readdir(filesFolder, (err, files) => {
     files.forEach(f => {
       state.push({...state,
         name:f,
@@ -72,32 +71,22 @@ componentDidMount(){
   )
 }
 
-checkFolderExists(){
-  if(!fs.existsSync(folder))
-{fs.mkdirSync(folder)}
+componentDidMount(){
+  this.updateFrontEnd()
 }
 
 addFile(){
+  ipcRenderer.send('check-folders', null)
+
   let pathId; let dateId; let nameId; 
 
   nameId=(key++).toString()
-  pathId=folder + nameId
+  pathId=filesFolder + nameId
   dateId=new Date().getFullYear()
 
-  this.checkFolderExists()
-
-  fs.writeFile(folder + nameId, (''), (err) =>{
+  fs.writeFile(filesFolder + nameId, (''), (err) =>{
       if(!err) {
-        this.setState({
-          file: [...this.state.file, {
-          id: Id++,
-          path: pathId,
-          date: dateId,
-          name: nameId
-              }
-            ]
-          }
-        )
+        this.updateFrontEnd()
       }else{
         ipcRenderer.send('error', err)
       }
