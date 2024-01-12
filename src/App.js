@@ -18,6 +18,11 @@ const fs = window.require("fs");
 const os = window.require("os");
 const path = window.require('path');
 
+const sep = path.sep;
+const folderName = "jes's editor"
+const folder = os.homedir() + sep + folderName + sep
+const filesFolder = folder + sep + 'Files' + sep
+
 class App extends React.Component {
   constructor(props){
     super(props);
@@ -44,11 +49,11 @@ class App extends React.Component {
             <div className="header">
               <div className='header-items'>
                 <Link to={'/'} draggable='false' id={this.state.theme}>
-                  <button className='header-button' ><AiFillFile size={19} /></button>
+                  <button className='header-button' ><AiFillFile size={20} /></button>
                 </Link>
 
                 <Link to={'/Editor'} draggable='false' id={this.state.theme}>
-                  <button className='header-button'><AiFillEdit size={19}/></button>
+                  <button className='header-button'><AiFillEdit size={20}/></button>
                 </Link>
               </div>
 

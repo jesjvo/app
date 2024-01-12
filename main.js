@@ -1,15 +1,19 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, shell } = require('electron');
 
 const fs = require("fs");
 const os = require("os");
 const path = require('path');
 
-const sep = path.sep;
-const folderName = "jes's editor"
-const folder = os.homedir() + sep + folderName + sep
-const filesFolder = folder + sep + 'Files' + sep
+const sep = path.sep; const extension = '.json'
+const folderName = "jes's editor" + sep; const homeDir = os.homedir() + sep
+const folder = homeDir + folderName
+const filesFolder = folder + 'Files' + sep
 const autoSaveFolder = folder + 'AutoSave' + sep
-const autoSaveFile = autoSaveFolder + 'Content.JSON'
+
+const autoSaveFile = autoSaveFolder + 'Content' + extension
+const activeFile = autoSaveFolder + 'activeFile'
+
+const quickFileName = 'Files' + sep
 
 function checkFolders(){
     if(!fs.existsSync(folder))
@@ -23,6 +27,20 @@ function checkFolders(){
     if(!fs.existsSync(autoSaveFolder))
     {
         fs.mkdirSync(autoSaveFolder)
+    }
+    if(!fs.existsSync(autoSaveFile))
+    {
+        fs.writeFile(autoSaveFile, JSON.stringify(''), (err) =>{
+            if(!err) {}
+            else{console.log(err)}
+    });
+    }
+    if(!fs.existsSync(activeFile))
+    {
+        fs.writeFile(activeFile, '', (err) =>{
+            if(!err) {}
+            else{console.log(err)}
+    });
     }
 }
 
@@ -42,32 +60,38 @@ app.on("ready", () => {
         }
     );
     mainWindow.loadURL('http://localhost:3000')
-
     checkFolders()
 });
 
+ipcMain.on('activate-file', (event, path)=>{
+    console.log(path)
+})
+
+ipcMain.on('delete-file', (event, path)=>{
+    fs.unlink(path, (err) => {
+        if (err) {
+          console.error(err);
+        } else {
+          console.log('File is deleted.');
+        }
+      });
+})
+
 ipcMain.on('check-folders', (event, value)=>{
     checkFolders()
+})
+
+ipcMain.on('open-folder', (event, value)=>{
+    checkFolders()
+    shell.openPath(filesFolder)
 })
 
 ipcMain.on("close-window", (event, value)=>{
     app.quit();
 });
 
-ipcMain.on("update-content", (event, contents)=>{
-    fs.writeFile(autoSaveFile, JSON.stringify(contents), (err) =>{
-        if(!err) {console.log("File Written"); }
-        else{
-            console.log(err);
-        }
-    });
-});
-
-ipcMain.on('error', (event, err)=>{
+ipcMain.on('error', (event, err)=>{ //way of communicating
     console.log(err)
 })
 
-
-//2 terminals (npm run electron . - electron terminal) and the other (npm run build - react terminal)
-
-//if want to see instantaneous updates, use browser react (npm start in react terminal)
+//npm run app -->

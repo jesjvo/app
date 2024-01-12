@@ -1,7 +1,9 @@
 import React from 'react';
+import {Routes, Route, Navigate} from 'react-router-dom';
 
 //icons
 import { AiFillPlusCircle } from "react-icons/ai";
+import { AiFillFolder } from "react-icons/ai";
 import { FaTrash } from "react-icons/fa6";
 
 /*window requirements */
@@ -10,108 +12,119 @@ import { FaTrash } from "react-icons/fa6";
   const os = window.require("os");
   const path = window.require('path');
 
-  const sep = path.sep;
-  const folderName = "jes's editor"
-  const folder = os.homedir() + sep + folderName + sep
-  const filesFolder = folder + sep + 'Files' + sep
-
-function File(props){
-  const deleteFile = (filePath) => {
-    console.log("deleted " + filePath)
-    //needs to delete file...
-    //then refresh front-end list...
-  }
-
-  const openFile = (filePath) => {
-    console.log("open file " + filePath)
-    //needs to open the file, get its contents, send it to the editor ->
-    //then editor opens through route, sets the contents that were sent...
-  }
-
-  return(
-      <div className='box-container' id={props.theme}>
-        <div className='left-container' id={props.theme} onClick={()=> {openFile(props.filePath)}}>
-          <p style={{fontSize:'20px', margin:'5px'}}>{props.fileName}</p>
-          <p style={{fontSize:'12px', margin:'0 0 0 5px', opacity:'.75'}}>{props.filePath}</p>
-          <p style={{fontSize:'12px', margin:'0 0 0 5px', opacity:'.75'}}>Last Opened : {props.fileDate}</p>
-        </div>
-          <div className='right-container' id={props.theme}>
-              <button className='trash-container'><FaTrash size={30} onClick={()=> {deleteFile(props.filePath)}}/></button>
-          </div>
-      </div>
-  )
-}
-
-var key = 0;
-var Id = 0;
-class Files extends React.Component {
-  constructor(props){
-    super(props);
-    this.state = {
-      file : [],
-  }
-}
-
-updateFrontEnd(){
-  ipcRenderer.send('check-folders', null)
-  let state = [{}]
+  const sep = path.sep; const extension = '.json'
+  const folderName = "jes's editor" + sep; const homeDir = os.homedir() + sep
+  const folder = homeDir + folderName
+  const filesFolder = folder + 'Files' + sep
+  const autoSaveFolder = folder + 'AutoSave' + sep
   
-  fs.readdir(filesFolder, (err, files) => {
-    files.forEach(f => {
-      state.push({...state,
-        name:f,
-        path: folder+f,
-        date: (new Date().getHours() +" : "+ new Date().getMinutes())
-      })
-    } 
-      )
-      state.shift()
-      this.setState({file:state})
+  const autoSaveFile = autoSaveFolder + 'Content' + extension
+  const activeFile = autoSaveFolder + 'activeFile'
+  
+  const quickFileName = 'Files' + sep
+  
+
+class Files extends React.Component {
+    constructor(props){
+      super(props);
+      this.state = {
+        shouldRedirect: false,
+        file : [],
     }
-  )
-}
+  }
 
-componentDidMount(){
-  this.updateFrontEnd()
-}
 
-addFile(){
-  ipcRenderer.send('check-folders', null)
+  updateFrontEnd(){
+    let state = [{}]
+    
+    fs.readdir(filesFolder, (err, files) => {
+      files.forEach(f => {
+        state.push({...state,
+          name:f,
+          path: quickFileName +f,
+        })
+      } 
+        )
+        state.shift()
+        this.setState({file:state})
+      }
+    )
+  }
 
-  let pathId; let dateId; let nameId; 
+  componentDidMount(){
+    this.updateFrontEnd()
+  }
 
-  nameId=(key++).toString()
-  pathId=filesFolder + nameId
-  dateId=new Date().getFullYear()
-
-  fs.writeFile(filesFolder + nameId, (''), (err) =>{
+  openFile(fileName){
+    let filePath = filesFolder + fileName
+    fs.writeFile(activeFile, filePath, (err) =>{
       if(!err) {
-        this.updateFrontEnd()
+        this.setState({ shouldRedirect: true })
       }else{
         ipcRenderer.send('error', err)
       }
     }
   );
-}
-  
-  render(){
-    return(
-        <div className='container' id={this.props.theme}>
-          <div className='files-container'>
-          <div className='add-container' id={this.props.theme}>
-              <button className='add-button' onClick={this.addFile.bind(this)}><AiFillPlusCircle size={30}/></button>
-          </div>
-            {this.state.file.map((file, index) => {
-              return (
-                <div key={index}>
-                  <File fileName={file.name} filePath={file.path} fileDate={file.date} fileId={file.id}></File>
-                </div>
-                )
-            })}
-          </div>
-        </div>
-    )
   }
+
+  addNewFile(){
+    let date = new Date()
+    var name = date.getHours() + date.getMinutes() + date.getSeconds()
+    var fileName = filesFolder + name + extension
+
+    if(!fs.existsSync(fileName)){
+      fs.writeFile(filesFolder + name + extension, JSON.stringify(''), (err) =>{
+        if(!err) {
+          this.updateFrontEnd()
+        }else{
+          ipcRenderer.send('error', err)
+        }
+      }
+    );
+  }else{
+    ipcRenderer.send("error", "already exists")
+  }
+  }
+
+  deleteFile(fileName){
+    fs.unlink(filesFolder + fileName, (err) => {
+        if (err) {
+          console.error(err);
+        } else {
+          this.updateFrontEnd()
+        }
+      });
+  }
+    
+    render(){
+      return(
+          <div className='container' id={this.props.theme}>
+            <div className='files-container'>
+            <div className='add-container' id={this.props.theme}>
+            <button className='header-button' style={{height:'40px'}} onClick={this.addNewFile.bind(this)}><AiFillPlusCircle size={20}/></button>
+            <button className='header-button' onClick={()=>{ipcRenderer.send('open-folder', null)}}><AiFillFolder size={19}/></button>            </div>
+              {this.state.file.map((file, index) => {
+                return (
+                  <div key={index}>
+                    {this.state.shouldRedirect ? (
+                    <Navigate replace to="/Editor" />
+                      ) : null}
+                      <div className='box-container' id={this.props.theme}>
+                        <div className='left-container' id={this.props.theme} onClick={()=> {this.openFile(file.name)}}>
+                          <p style={{fontSize:'20px', margin:'5px'}}>{file.name}</p>
+                          <p style={{fontSize:'12px', margin:'0 0 0 5px', opacity:'.75'}}>{file.path}</p>
+                        </div>
+                          <div className='right-container' id={this.props.theme}>
+                              <button className='trash-container'><FaTrash size={30} onClick={()=> {this.deleteFile(file.name)}}/></button>
+                          </div>
+                      </div>
+                  </div>
+                  )
+              })}
+            </div>
+          </div>
+      )
+    }
 }
   
 export default Files;
