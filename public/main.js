@@ -52,7 +52,7 @@ app.on("ready", () => {
         minWidth: 350, minHeight: 450,
         width:350,
         height:450,
-        icon: __dirname + sep + 'main.ico',
+        icon: `file://${path.join(__dirname, '../build/main.ico')}`,
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
@@ -62,8 +62,8 @@ app.on("ready", () => {
     );
     mainWindow.loadURL(
         //isDev
-        'http://localhost:3000'
-        //__dirname + sep + 'build' + sep + 'index.html'
+        //'http://localhost:3000'
+        `file://${path.join(__dirname, '../build/index.html')}`
         )
     checkFolders()
 });

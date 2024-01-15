@@ -1,9 +1,10 @@
 {
-  "name": "app",
+  "name": "editor",
+  "productName": "Jes's File Editor",
   "version": "0.1.0",
   "private": true,
-  "author": "jes",
-  "description": "editor",
+  "author": "Jes",
+  "description": "A simple text editor that allows basic formatting and storing files locally.",
   "dependencies": {
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
@@ -12,7 +13,6 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "concurrently": "^8.2.2",
-    "electron": "^28.1.3",
     "cross-env": "^7.0.3",
     "fs": "^0.0.1-security",
     "os": "^0.1.2",
@@ -33,7 +33,19 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "app": "concurrently -k \"cross-env BROWSER=none yarn start\" \"wait-on http://localhost:3000 && electron .\""
+    "app": "concurrently -k \"cross-env BROWSER=none yarn start\" \"wait-on http://localhost:3000 && electron .\"",
+    "app:build": "yarn build && electron-builder -c.extraMetadata.main=build/main.js"
+  },
+  "build": {
+    "extends": null,
+    "appId": "com.jes.Editor",
+    "icon": "build/main.ico",
+    "files": [
+      "dist/**/*",
+      "build/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ]
   },
   "eslintConfig": {
     "extends": [
@@ -54,6 +66,7 @@
     ]
   },
   "devDependencies": {
+    "electron": "^28.1.3",
     "electron-builder": "^24.9.1",
     "electron-is-dev": "^3.0.1"
   }
