@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, shell } = require('electron');
+const { app, BrowserWindow, ipcMain, shell  } = require('electron');
 
 const fs = require("fs");
 const os = require("os");
@@ -63,8 +63,7 @@ app.on("ready", () => {
     mainWindow.loadURL(
         //isDev
         //'http://localhost:3000'
-        `file://${path.join(__dirname, '../build/index.html')}`
-        )
+        `file://${path.join(__dirname, '../build/index.html')}`)
     checkFolders()
 });
 
