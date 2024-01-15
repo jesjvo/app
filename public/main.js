@@ -5,7 +5,7 @@ const os = require("os");
 const path = require('path');
 
 const sep = path.sep; const extension = '.json'
-const folderName = "jes's editor" + sep;
+const folderName = "Jes's Editor" + sep;
 const homeDir = os.homedir() + sep
 
 const folder = homeDir + folderName
@@ -60,7 +60,11 @@ app.on("ready", () => {
             }
         }
     );
-    mainWindow.loadURL('http://localhost:3000')
+    mainWindow.loadURL(
+        //isDev
+        'http://localhost:3000'
+        //__dirname + sep + 'build' + sep + 'index.html'
+        )
     checkFolders()
 });
 

@@ -7,7 +7,7 @@ const os = window.require("os");
 const path = window.require('path');
 
 const sep = path.sep;
-const folderName = "jes's editor" + sep;
+const folderName = "Jes's Editor" + sep;
 const homeDir = os.homedir() + sep
 
 const folder = homeDir + folderName
@@ -45,12 +45,12 @@ class Editor extends React.Component {
       if(fs.existsSync(this.state.writingFile)){
         var content = JSON.parse(fs.readFileSync(this.state.writingFile, 'utf8'))
 
-        editor.root.dataset.placeholder = ('You are writing in "' + this.state.writingFile.split(sep).pop() +'"');
+        editor.root.dataset.placeholder = ('You are writing in "' + this.state.writingFile.split(sep).pop() +'".');
       }
       else{
         var content = ''
         this.setState({writingFile: null})
-        editor.root.dataset.placeholder = ("No file is selected");
+        editor.root.dataset.placeholder = ("No file is selected, this won't save.");
       }
       editor.setContents(content)
     }

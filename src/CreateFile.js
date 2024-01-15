@@ -12,7 +12,7 @@ const os = window.require("os");
 const path = window.require('path');
 
 const sep = path.sep; const extension = '.json'
-const folderName = "jes's editor" + sep;
+const folderName = "Jes's Editor" + sep;
 const homeDir = os.homedir() + sep
 
 const folder = homeDir + folderName
