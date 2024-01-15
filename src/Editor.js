@@ -2,29 +2,24 @@ import React, { useState, useRef, useEffect } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
-const ipcRenderer = window.require("electron").ipcRenderer;
 const fs = window.require("fs");
 const os = window.require("os");
 const path = window.require('path');
 
-const sep = path.sep; const extension = '.json'
-const folderName = "jes's editor" + sep; const homeDir = os.homedir() + sep
+const sep = path.sep;
+const folderName = "jes's editor" + sep;
+const homeDir = os.homedir() + sep
+
 const folder = homeDir + folderName
-const filesFolder = folder + 'Files' + sep
 const autoSaveFolder = folder + 'AutoSave' + sep
-
-const autoSaveFile = autoSaveFolder + 'Content' + extension
 const activeFile = autoSaveFolder + 'activeFile'
-
-const quickFileName = 'Files' + sep
 
 class Editor extends React.Component {
   constructor(props){
     super(props);
     this.quillRef = React.createRef(null)
     this.state = {
-      content: null,
-      writingFile: ''
+      writingFile: fs.readFileSync(activeFile, 'utf8')
     }
   }
 
@@ -46,30 +41,28 @@ class Editor extends React.Component {
   componentDidMount(){
     if(this.quillRef){
       var editor = this.quillRef.current.getEditor()
-      var setWritingFile = fs.readFileSync(activeFile, 'utf8') //reads active file
 
-      if(fs.existsSync(setWritingFile)){ //if activated file exists
-        var content = JSON.parse(fs.readFileSync(setWritingFile, 'utf8'))
+      if(fs.existsSync(this.state.writingFile)){
+        var content = JSON.parse(fs.readFileSync(this.state.writingFile, 'utf8'))
 
-        this.setState({writingFile: setWritingFile}); editor.setContents(content);
-        editor.root.dataset.placeholder = ('You are writing in "' + setWritingFile.split(sep).pop() +'"');
-      }else{
-        var content = JSON.parse(fs.readFileSync(autoSaveFile, 'utf8'))
-        editor.setContents(content)
-        this.setState({writingFile: autoSaveFile})
-        editor.root.dataset.placeholder = ('You are writing in NO file');
+        editor.root.dataset.placeholder = ('You are writing in "' + this.state.writingFile.split(sep).pop() +'"');
       }
+      else{
+        var content = ''
+        this.setState({writingFile: null})
+        editor.root.dataset.placeholder = ("No file is selected");
+      }
+      editor.setContents(content)
     }
   }
 
   onChange(content, delta, source, editor) {
-    this.setState({content : (content)})
-    fs.writeFile(this.state.writingFile, JSON.stringify(editor.getContents()), (err) =>{
-      if(!err) {console.log("File Written"); }
-      else{
-          console.log(err);
-      }
-  }); //{array}{:} format (mainly used)
+    if(fs.existsSync(this.state.writingFile)){
+      fs.writeFile(this.state.writingFile, JSON.stringify(editor.getContents()), (err) =>{
+        if(!err) {}
+        else{}
+      });
+    }
   }
   
   render(){

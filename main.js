@@ -5,15 +5,15 @@ const os = require("os");
 const path = require('path');
 
 const sep = path.sep; const extension = '.json'
-const folderName = "jes's editor" + sep; const homeDir = os.homedir() + sep
+const folderName = "jes's editor" + sep;
+const homeDir = os.homedir() + sep
+
 const folder = homeDir + folderName
 const filesFolder = folder + 'Files' + sep
 const autoSaveFolder = folder + 'AutoSave' + sep
 
 const autoSaveFile = autoSaveFolder + 'Content' + extension
 const activeFile = autoSaveFolder + 'activeFile'
-
-const quickFileName = 'Files' + sep
 
 function checkFolders(){
     if(!fs.existsSync(folder))
@@ -32,14 +32,14 @@ function checkFolders(){
     {
         fs.writeFile(autoSaveFile, JSON.stringify(''), (err) =>{
             if(!err) {}
-            else{console.log(err)}
+            else{}
     });
     }
     if(!fs.existsSync(activeFile))
     {
         fs.writeFile(activeFile, '', (err) =>{
             if(!err) {}
-            else{console.log(err)}
+            else{}
     });
     }
 }
@@ -52,6 +52,7 @@ app.on("ready", () => {
         minWidth: 350, minHeight: 450,
         width:350,
         height:450,
+        icon: __dirname + sep + 'main.ico',
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
@@ -63,17 +64,9 @@ app.on("ready", () => {
     checkFolders()
 });
 
-ipcMain.on('activate-file', (event, path)=>{
-    console.log(path)
-})
-
 ipcMain.on('delete-file', (event, path)=>{
     fs.unlink(path, (err) => {
-        if (err) {
-          console.error(err);
-        } else {
-          console.log('File is deleted.');
-        }
+        if (err) {} else {}
       });
 })
 
@@ -89,9 +82,5 @@ ipcMain.on('open-folder', (event, value)=>{
 ipcMain.on("close-window", (event, value)=>{
     app.quit();
 });
-
-ipcMain.on('error', (event, err)=>{ //way of communicating
-    console.log(err)
-})
 
 //npm run app -->
