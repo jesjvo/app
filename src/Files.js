@@ -5,6 +5,8 @@ import {Routes, Route, Navigate} from 'react-router-dom';
 import { FaTrash } from "react-icons/fa6";
 
 /*window requirements */
+  const ipcRenderer = window.require("electron").ipcRenderer;
+
   const fs = window.require("fs");
   const os = window.require("os");
   const path = window.require('path');
@@ -35,10 +37,11 @@ class Files extends React.Component {
     
     fs.readdir(filesFolder, (err, files) => {
       files.forEach(f => {
-        state.push({...state,
-          name:path.parse(f).name,
-          path: quickFileName +f,
-        })
+        if(path.extname(f)=='.json')
+          state.push({...state,
+            name:path.parse(f).name,
+            path: quickFileName +f,
+          })
       } 
         )
         state.shift()

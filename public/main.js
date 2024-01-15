@@ -62,8 +62,8 @@ app.on("ready", () => {
     );
     mainWindow.loadURL(
         //isDev
-        //'http://localhost:3000'
-        `file://${path.join(__dirname, '../build/index.html')}`)
+        'http://localhost:3000')
+        //`file://${path.join(__dirname, '../build/index.html')}`)
     checkFolders()
 });
 
@@ -84,6 +84,10 @@ ipcMain.on('open-folder', (event, value)=>{
 
 ipcMain.on("close-window", (event, value)=>{
     app.quit();
+});
+
+ipcMain.on("error", (event, value)=>{
+    console.log(value)
 });
 
 //npm run app -->
